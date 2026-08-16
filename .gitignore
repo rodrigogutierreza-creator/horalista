@@ -1,0 +1,9 @@
+# macOS
+.DS_Store
+
+# Vercel CLI
+.vercel
+
+# Nota: dist/ SI se versiona a proposito.
+# Vercel publica esa carpeta tal cual, sin paso de build, porque la pagina
+# se compila aca con python3 build.py y el contenedor de Vercel no corre ese paso.
