@@ -989,7 +989,7 @@ ul{margin:0; padding:0; list-style:none}
       <h2>Deja de perder clientes por no alcanzar a contestar</h2>
       <p>Prueba HoraLista un mes. Si al final del mes no te anotó más horas de las que estabas perdiendo, lo cancelas y no pagas nada.</p>
       <div class="closing-actions">
-        <a class="btn btn--stamp" id="ctaWa" href="#" target="_blank" rel="noopener">Escribir por WhatsApp</a>
+        <a class="btn btn--stamp" id="ctaPrimeros" href="#" target="_blank" rel="noopener">Quiero ser de los primeros</a>
         <a class="btn" href="#agendador">Volver al agendador</a>
       </div>
     </div>
@@ -1023,11 +1023,15 @@ ul{margin:0; padding:0; list-style:none}
      Reemplaza el número por el WhatsApp real del negocio (formato internacional, sin + ni espacios). */
   var CONFIG = {
     whatsapp: "56975878552",
-    mensajeVentas: "Hola HoraLista. Quiero saber cómo automatizar la agenda de mi negocio."
+    mensajeVentas: "Hola HoraLista. Quiero saber cómo automatizar la agenda de mi negocio.",
+    /* Mensaje distinto a propósito: así se distingue en WhatsApp quién quiere
+       partir de verdad de quién solo está preguntando (botón flotante). */
+    mensajePrimeros: "Hola HoraLista. Quiero ser de los primeros negocios en probarlo — cuéntenme cómo partir."
   };
 
   var linkVentas = "https://wa.me/" + CONFIG.whatsapp + "?text=" + encodeURIComponent(CONFIG.mensajeVentas);
-  document.getElementById("ctaWa").href = linkVentas;
+  var linkPrimeros = "https://wa.me/" + CONFIG.whatsapp + "?text=" + encodeURIComponent(CONFIG.mensajePrimeros);
+  document.getElementById("ctaPrimeros").href = linkPrimeros;
   document.getElementById("tabWa").href = linkVentas;
 
   var DIAS   = ["Dom","Lun","Mar","Mié","Jue","Vie","Sáb"];
