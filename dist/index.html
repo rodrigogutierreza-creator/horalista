@@ -513,6 +513,79 @@ ul{margin:0; padding:0; list-style:none}
 .setup-item h3{font-size:var(--text-lg); font-stretch:88%; margin-bottom:var(--space-2)}
 .setup-item p{color:var(--color-ink-soft); font-size:var(--text-sm)}
 
+/* ---------- Panel del negocio (vista del dueño, no del cliente) ---------- */
+.panel-grid{
+  display:grid; gap:var(--space-10);
+  grid-template-columns:minmax(0,1.1fr) minmax(0,0.9fr);
+  align-items:start;
+}
+@media (max-width:900px){ .panel-grid{grid-template-columns:minmax(0,1fr)} }
+
+.dsrow-action{
+  justify-self:end;
+  font-family:var(--font-display); font-size:var(--text-label); font-weight:600;
+  letter-spacing:0.06em; text-transform:uppercase; white-space:nowrap;
+  padding:var(--space-1) var(--space-2);
+  background:transparent;
+  border:var(--rule-hair) solid var(--color-rule-firm);
+  border-radius:var(--radius-1);
+  color:var(--color-ink-soft);
+  cursor:pointer;
+  transition:border-color var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out);
+}
+.dsrow-action:hover{border-color:var(--color-ink)}
+.dsrow-action[data-state="bloqueada"]{border-color:var(--color-accent); color:var(--color-accent)}
+
+.panel-block{padding-block:var(--space-6); border-top:var(--rule-firm) solid var(--color-ink)}
+.panel-block + .panel-block{border-top:var(--rule-hair) solid var(--color-rule)}
+.panel-block h3{font-size:var(--text-lg); font-stretch:88%; margin-bottom:var(--space-1)}
+.panel-block > p{color:var(--color-ink-soft); font-size:var(--text-sm); margin-bottom:var(--space-4)}
+
+.channel{
+  display:flex; align-items:center; justify-content:space-between; gap:var(--space-4);
+  padding-block:var(--space-3);
+  border-top:var(--rule-hair) solid var(--color-rule);
+}
+.channel:first-child{border-top:0}
+.channel-name{display:flex; flex-direction:column; gap:2px; min-width:0}
+.channel-name b{font-family:var(--font-display); font-weight:600; font-stretch:94%; font-size:var(--text-sm)}
+.channel-name span{font-size:var(--text-xs); color:var(--color-ink-faint)}
+
+.toggle,.badge-fixed{
+  flex:none;
+  font-family:var(--font-display); font-size:var(--text-xs); font-weight:600; font-stretch:96%;
+  padding:var(--space-2) var(--space-4);
+  border:var(--rule-hair) solid var(--color-rule-firm);
+  border-radius:var(--radius-1);
+  white-space:nowrap;
+}
+.badge-fixed{background:var(--color-paper-2); color:var(--color-ink-faint)}
+.toggle{
+  background:var(--color-paper-2); color:var(--color-ink-soft); cursor:pointer;
+  transition:color var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out), background var(--dur-fast) var(--ease-out);
+}
+.toggle:hover{border-color:var(--color-ink-faint)}
+.toggle[aria-pressed="true"]{background:var(--color-accent); border-color:var(--color-accent); color:var(--color-accent-ink)}
+
+.avisos{display:flex; flex-direction:column}
+.aviso{
+  display:grid; gap:var(--space-1) var(--space-4);
+  grid-template-columns:minmax(0,1fr) auto;
+  padding-block:var(--space-3);
+  border-top:var(--rule-hair) solid var(--color-rule);
+}
+.aviso:first-child{border-top:0}
+.aviso b{display:block; font-weight:600; font-size:var(--text-sm); overflow-wrap:anywhere}
+.aviso span{display:block; font-size:var(--text-xs); color:var(--color-ink-faint)}
+.aviso-chan{
+  align-self:start; justify-self:end;
+  font-family:var(--font-display); font-size:var(--text-label); font-weight:600;
+  letter-spacing:0.06em; text-transform:uppercase; white-space:nowrap;
+  color:var(--color-ink-faint);
+}
+.aviso--tg .aviso-chan{color:var(--color-accent)}
+.avisos-empty{font-size:var(--text-sm); color:var(--color-ink-faint); padding-block:var(--space-3)}
+
 /* ---------- Precios como libro de tarifas ---------- */
 .tariff{display:grid; gap:0; grid-template-columns:repeat(auto-fit,minmax(min(100%,270px),1fr)); border-top:var(--rule-firm) solid var(--color-ink)}
 .tariff-col{
@@ -605,6 +678,7 @@ ul{margin:0; padding:0; list-style:none}
     <nav class="masthead-nav">
       <a href="#agendador">Agendador</a>
       <a href="#instalacion">Instalación</a>
+      <a href="#panel">Tu panel</a>
       <a href="#precios">Precios</a>
       <a href="#preguntas">Preguntas</a>
     </nav>
@@ -785,6 +859,43 @@ ul{margin:0; padding:0; list-style:none}
     </div>
   </section>
 
+  <!-- PANEL DEL NEGOCIO -->
+  <section class="band band-pad" id="panel">
+    <div class="wrap">
+      <div class="sec-head">
+        <h2>Esto es lo que ves tú, no tu cliente</h2>
+        <p>El agendador de más arriba es la parte pública. Esto es lo que se abre en tu teléfono: tu agenda de hoy, por dónde te escriben y cada aviso de reserva nueva.</p>
+      </div>
+
+      <div class="panel-grid">
+        <figure class="daysheet" id="panelSheet">
+          <figcaption class="daysheet-head">
+            <strong>Hoy</strong>
+            <span class="u-label u-num" id="panelSheetDate">Lunes 17</span>
+          </figcaption>
+          <div class="daysheet-rows" id="panelSheetRows"></div>
+          <div class="daysheet-foot">
+            Bloquea una hora si necesitas guardarla para ti: nadie más va a poder tomarla.
+          </div>
+        </figure>
+
+        <div>
+          <div class="panel-block">
+            <h3>Por dónde te escriben</h3>
+            <p>Activa los canales que quieras. Cambiar de uno a otro no borra tu agenda ni tu historial.</p>
+            <div id="channelList"></div>
+          </div>
+          <div class="panel-block">
+            <h3>Avisos</h3>
+            <p>Cada reserva nueva te llega así, sin importar por dónde haya entrado.</p>
+            <div class="avisos" id="avisosList"></div>
+            <p class="avisos-empty u-hidden" id="avisosEmpty">Activa un canal para ver sus avisos aquí.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- PRECIOS -->
   <section class="band band-pad" id="precios">
     <div class="wrap">
@@ -894,6 +1005,7 @@ ul{margin:0; padding:0; list-style:none}
     <nav class="colophon-nav">
       <a href="#agendador">Agendador</a>
       <a href="#instalacion">Instalación</a>
+      <a href="#panel">Tu panel</a>
       <a href="#precios">Precios</a>
       <a href="#preguntas">Preguntas</a>
       <a href="#contacto">Contacto</a>
@@ -993,6 +1105,138 @@ ul{margin:0; padding:0; list-style:none}
       });
     }, {threshold:0.2});
     filas.forEach(function(f){ io.observe(f); });
+  })();
+
+  /* ====== Panel del negocio (vista del dueño) ====== */
+  (function pintarPanel(){
+    var PANEL_HOJA = [
+      {h:"09:30", quien:"Felipe Concha",   que:"Tasación de su auto",     libre:false},
+      {h:"10:15", quien:"",                que:"",                        libre:true,  bloqueada:false},
+      {h:"11:00", quien:"Daniela Vergara", que:"Test drive · Kicks",      libre:false},
+      {h:"12:30", quien:"",                que:"",                        libre:true,  bloqueada:false},
+      {h:"16:00", quien:"Andrés Bello",    que:"Mantención programada",   libre:false}
+    ];
+
+    var CANALES = [
+      {id:"wa",  nombre:"WhatsApp",    detalle:"Con tu número actual",         fijo:true,  activo:true},
+      {id:"tg",  nombre:"Telegram",    detalle:"Actívalo cuando quieras",      fijo:false, activo:false},
+      {id:"web", nombre:"Link propio", detalle:"horalista.cl/tu-negocio",      fijo:true,  activo:true}
+    ];
+
+    var AVISOS_BASE = [
+      {chan:"wa", quien:"Felipe Concha",   texto:"Tasación de su auto · hoy 09:30",       hace:"hace 6 min"},
+      {chan:"wa", quien:"Daniela Vergara", texto:"Test drive · Kicks · hoy 11:00",         hace:"hace 41 min"}
+    ];
+    var AVISOS_TG = [
+      {chan:"tg", quien:"Andrés Bello",    texto:"Mantención programada · hoy 16:00",      hace:"hace 2 min"}
+    ];
+
+    var elPanel = {
+      rows:    document.getElementById("panelSheetRows"),
+      fecha:   document.getElementById("panelSheetDate"),
+      canales: document.getElementById("channelList"),
+      avisos:  document.getElementById("avisosList"),
+      vacio:   document.getElementById("avisosEmpty")
+    };
+
+    function renderPanelSheet(){
+      elPanel.fecha.textContent = DIAS[hoy.getDay()] + " " + hoy.getDate();
+      elPanel.rows.innerHTML = "";
+
+      PANEL_HOJA.forEach(function(r){
+        var row = document.createElement("div");
+        row.className = "dsrow" + (r.libre ? " dsrow--free" : "");
+
+        var hora = tramo("dsrow-h", r.h);
+
+        var quien = document.createElement("span");
+        quien.className = "dsrow-who";
+        var b = document.createElement("b");
+        b.textContent = r.libre ? (r.bloqueada ? "bloqueada por ti" : "sin tomar") : r.quien;
+        quien.appendChild(b);
+        if (r.que) quien.appendChild(tramo("", r.que));
+
+        row.appendChild(hora);
+        row.appendChild(quien);
+
+        if (r.libre){
+          var accion = document.createElement("button");
+          accion.type = "button";
+          accion.className = "dsrow-action";
+          accion.textContent = r.bloqueada ? "Liberar" : "Bloquear";
+          accion.setAttribute("data-state", r.bloqueada ? "bloqueada" : "libre");
+          accion.addEventListener("click", function(){
+            r.bloqueada = !r.bloqueada;
+            renderPanelSheet();
+          });
+          row.appendChild(accion);
+        } else {
+          row.appendChild(document.createElement("span"));
+        }
+
+        elPanel.rows.appendChild(row);
+      });
+    }
+
+    function renderChannels(){
+      elPanel.canales.innerHTML = "";
+      CANALES.forEach(function(c){
+        var row = document.createElement("div");
+        row.className = "channel";
+
+        var nombre = document.createElement("span");
+        nombre.className = "channel-name";
+        nombre.appendChild(fuerte(c.nombre));
+        nombre.appendChild(tramo("", c.detalle));
+        row.appendChild(nombre);
+
+        if (c.fijo){
+          var badge = tramo("badge-fixed", "Conectado");
+          row.appendChild(badge);
+        } else {
+          var btn = document.createElement("button");
+          btn.type = "button";
+          btn.className = "toggle";
+          btn.setAttribute("aria-pressed", c.activo ? "true" : "false");
+          btn.textContent = c.activo ? "Conectado" : "Conectar";
+          btn.addEventListener("click", function(){
+            c.activo = !c.activo;
+            renderChannels();
+            renderAvisos();
+          });
+          row.appendChild(btn);
+        }
+        elPanel.canales.appendChild(row);
+      });
+    }
+
+    function renderAvisos(){
+      elPanel.avisos.innerHTML = "";
+      var tg = CANALES.filter(function(c){ return c.id === "tg"; })[0];
+      var lista = (tg && tg.activo) ? AVISOS_TG.concat(AVISOS_BASE) : AVISOS_BASE.slice();
+
+      lista.forEach(function(a){
+        var row = document.createElement("div");
+        row.className = "aviso reveal" + (a.chan === "tg" ? " aviso--tg" : "");
+
+        var quien = document.createElement("span");
+        quien.appendChild(fuerte(a.quien));
+        quien.appendChild(tramo("", a.texto));
+
+        var chan = tramo("aviso-chan", (a.chan === "tg" ? "Telegram" : "WhatsApp") + " · " + a.hace);
+
+        row.appendChild(quien);
+        row.appendChild(chan);
+        elPanel.avisos.appendChild(row);
+        requestAnimationFrame(function(){ row.classList.add("is-in"); });
+      });
+
+      elPanel.vacio.classList.toggle("u-hidden", lista.length > 0);
+    }
+
+    renderPanelSheet();
+    renderChannels();
+    renderAvisos();
   })();
 
   /* ====== Datos del agendador ====== */
